@@ -11,7 +11,7 @@
  */
 
 namespace Realestate\MssqlBundle\Driver\PDODblib;
-use Realestate\DBAL\Platforms\DblibPlatform;
+use Realestate\MssqlBundle\Platforms\DblibPlatform;
 
 class Driver implements \Doctrine\DBAL\Driver
 {
