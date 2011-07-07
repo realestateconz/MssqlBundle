@@ -42,36 +42,39 @@ class Driver implements \Doctrine\DBAL\Driver
      */
     private function _constructPdoDsn(array $params)
     {
-        /*
-        // use for testing on Win
-        $dsn = 'sqlsrv:server=';
+        if (stristr(PHP_OS, 'WIN'))
+        {
+            // use for testing on Win
+            $dsn = 'sqlsrv:server=';
 
-        if (isset($params['host'])) {
-            $dsn .= $params['host'];
-        }
+            if (isset($params['host'])) {
+                $dsn .= $params['host'];
+            }
 
-        if (isset($params['port']) && !empty($params['port'])) {
-            $dsn .= ',' . $params['port'];
-        }
+            if (isset($params['port']) && !empty($params['port'])) {
+                $dsn .= ',' . $params['port'];
+            }
 
-		if (isset($params['dbname'])) {
-			$dsn .= ';Database=' .  $params['dbname'];
-		}
-		return $dsn;
-         */
+            if (isset($params['dbname'])) {
+                $dsn .= ';Database=' .  $params['dbname'];
+            }
+            return $dsn;
 
-        $dsn = 'dblib:';
-        if (isset($params['host'])) {
-            $dsn .= 'host=' . $params['host'] . ';';
-        }
-        if (isset($params['port'])) {
-            $dsn .= 'port=' . $params['port'] . ';';
-        }
-        if (isset($params['dbname'])) {
-            $dsn .= 'dbname=' . $params['dbname'] . ';';
-        }
+        } else {
 
-        return $dsn;
+            $dsn = 'dblib:';
+            if (isset($params['host'])) {
+                $dsn .= 'host=' . $params['host'] . ';';
+            }
+            if (isset($params['port'])) {
+                $dsn .= 'port=' . $params['port'] . ';';
+            }
+            if (isset($params['dbname'])) {
+                $dsn .= 'dbname=' . $params['dbname'] . ';';
+            }
+
+            return $dsn;
+        }
     }
 
     public function getDatabasePlatform()
