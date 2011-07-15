@@ -65,7 +65,13 @@ class DblibPlatform extends AbstractPlatform
                 $order = trim(preg_replace('/ASC|DESC/i', '', $order));
             }
 
-            $query = preg_replace('/^SELECT\s/i', 'SELECT TOP ' . ($count+$offset) . ' ', $query);
+            // SELECT TOP DISTINCT does not work with mssql
+            if(strpos('SELECT DISTINCT', $query) !== false) {
+                $query = preg_replace('/^SELECT DISTINCT\s/i', 'SELECT DISTINCT TOP ' . ($count+$offset) . ' ', $query);
+            } else {
+                $query = preg_replace('/^SELECT\s/i', 'SELECT TOP ' . ($count+$offset) . ' ', $query);
+            }
+            
 
             $query = 'SELECT * FROM (SELECT TOP ' . $count . ' * FROM (' . $query . ') AS inner_tbl';
             if ($orderby !== false) {
