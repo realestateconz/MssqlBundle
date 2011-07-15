@@ -12,13 +12,17 @@
 namespace Realestate\MssqlBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Doctrine\DBAL\Types\Type;
 
 class RealestateMssqlBundle extends Bundle
 {
     public function boot()
     {
         // Register custom data types
-        \Doctrine\DBAL\Types\Type::addType('uniqueidentifier', 'Realestate\MssqlBundle\Types\UniqueidentifierType');
-        \Doctrine\DBAL\Types\Type::overrideType('datetime', 'Realestate\MssqlBundle\Types\DateTimeType');
+        if(!Type::hasType('uniqueidentifier')) {
+            Type::addType('uniqueidentifier', 'Realestate\MssqlBundle\Types\UniqueidentifierType');
+        }
+        
+        Type::overrideType('datetime', 'Realestate\MssqlBundle\Types\DateTimeType');
     }
 }
