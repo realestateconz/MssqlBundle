@@ -25,6 +25,7 @@ use Doctrine\DBAL\DBALException,
     Doctrine\DBAL\Schema\TableDiff;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Platforms\MsSqlPlatform;
 
 /**
  * The DblibPlatform provides the behavior, features and SQL dialect of the
@@ -35,7 +36,7 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
  * @author Roman Borschel <roman@code-factory.org>
  * @author Benjamin Eberlei <kontakt@beberlei.de>
  */
-class DblibPlatform extends AbstractPlatform
+class DblibPlatform extends MsSqlPlatform
 {
      /**
      * Adds an adapter-specific LIMIT clause to the SELECT statement.
@@ -92,17 +93,6 @@ class DblibPlatform extends AbstractPlatform
 
 
     /**
-     * Returns the regular expression operator.
-     *
-     * @return string
-     * @override
-     */
-    public function getRegexpExpression()
-    {
-        return 'RLIKE';
-    }
-
-    /**
      * Return string to call a variable with the current timestamp inside an SQL statement
      * There are three special variables for current date and time:
      * - CURRENT_TIMESTAMP (date and time, TIMESTAMP type)
@@ -123,34 +113,6 @@ class DblibPlatform extends AbstractPlatform
         }
     }
 
-    /**
-     * return string to call a function to get a substring inside an SQL statement
-     *
-     * @return string to call a function to get a substring
-     * @override
-     */
-    public function getSubstringExpression($value, $position, $length = null)
-    {
-        if ( ! is_null($length)) {
-            return 'SUBSTRING(' . $value . ', ' . $position . ', ' . $length . ')';
-        }
-        return 'SUBSTRING(' . $value . ', ' . $position . ', LEN(' . $value . ') - ' . $position . ' + 1)';
-    }
-
-    /**
-     * Returns string to concatenate two or more string parameters
-     *
-     * @param string $arg1
-     * @param string $arg2
-     * @param string $values...
-     * @return string to concatenate two strings
-     * @override
-     */
-    public function getConcatExpression()
-    {
-        $args = func_get_args();
-        return '(' . implode(' + ', $args) . ')';
-    }
 
     /**
      * Returns global unique identifier
@@ -164,31 +126,6 @@ class DblibPlatform extends AbstractPlatform
     }
 
     /**
-     * Whether the platform prefers identity columns for ID generation.
-     * MsSql prefers "autoincrement" identity columns since sequences can only
-     * be emulated with a table.
-     *
-     * @return boolean
-     * @override
-     */
-    public function prefersIdentityColumns()
-    {
-        return true;
-    }
-
-    /**
-     * Whether the platform supports identity columns.
-     * MsSql supports this through AUTO_INCREMENT columns.
-     *
-     * @return boolean
-     * @override
-     */
-    public function supportsIdentityColumns()
-    {
-        return true;
-    }
-
-    /**
      * Whether the platform supports savepoints. MsSql does not.
      *
      * @return boolean
@@ -199,10 +136,6 @@ class DblibPlatform extends AbstractPlatform
         return false;
     }
 
-    public function getShowDatabasesSQL()
-    {
-        return 'SHOW DATABASES';
-    }
 
     public function getListTablesSQL()
     {
@@ -233,43 +166,7 @@ class DblibPlatform extends AbstractPlatform
     {
         return "SELECT name FROM sysobjects WHERE xtype = 'TR'";
     }
-    public function getListTableColumnsSQL($table, $database = null)
-    {
-        $table = strtoupper($table);
-        return sprintf("SELECT * FROM INFORMATION_SCHEMA.Columns where TABLE_NAME = '%s'",$table);
-    }
-     public function getListTableForeignKeysSQL($table)
-    {
-        $table = strtoupper($table);
-        return sprintf("SELECT C.TABLE_CATALOG [PKTABLE_QUALIFIER],
-                                   C.TABLE_SCHEMA [PKTABLE_OWNER],
-                                   C.TABLE_NAME [PKTABLE_NAME],
-                                   KCU.COLUMN_NAME [PKCOLUMN_NAME],
-                                   C2.TABLE_CATALOG [FKTABLE_QUALIFIER],
-                                   C2.TABLE_SCHEMA [FKTABLE_OWNER],
-                                   C2.TABLE_NAME [FKTABLE_NAME],
-                                   KCU2.COLUMN_NAME [FKCOLUMN_NAME],
-                                   RC.UPDATE_RULE,
-                                   RC.DELETE_RULE,
-                                   C.CONSTRAINT_NAME [FKCONSTRAINT_NAME],
-                                   C2.CONSTRAINT_NAME [PKCONSTRAINT_NAME],
-                                   CAST(7 AS SMALLINT) [DEFERRABILITY]
-                            FROM   INFORMATION_SCHEMA.TABLE_CONSTRAINTS C
-                                   INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE KCU
-                                     ON C.CONSTRAINT_SCHEMA = KCU.CONSTRAINT_SCHEMA
-                                        AND C.CONSTRAINT_NAME = KCU.CONSTRAINT_NAME
-                                   INNER JOIN INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS RC
-                                     ON C.CONSTRAINT_SCHEMA = RC.CONSTRAINT_SCHEMA
-                                        AND C.CONSTRAINT_NAME = RC.CONSTRAINT_NAME
-                                   INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS C2
-                                     ON RC.UNIQUE_CONSTRAINT_SCHEMA = C2.CONSTRAINT_SCHEMA
-                                        AND RC.UNIQUE_CONSTRAINT_NAME = C2.CONSTRAINT_NAME
-                                   INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE KCU2
-                                     ON C2.CONSTRAINT_SCHEMA = KCU2.CONSTRAINT_SCHEMA
-                                        AND C2.CONSTRAINT_NAME = KCU2.CONSTRAINT_NAME
-                                        AND KCU.ORDINAL_POSITION = KCU2.ORDINAL_POSITION
-                            WHERE  C.CONSTRAINT_TYPE = 'FOREIGN KEY' AND C.TABLE_NAME = '%s'", $table);
-    }
+
     public function getListTableTriggersSQL($table)
     {
         $table = $this->_conn->quote($table,'text');
@@ -281,17 +178,6 @@ class DblibPlatform extends AbstractPlatform
         return "SELECT name FROM sysobjects WHERE xtype = 'V'";
     }
 
-    /**
-     * drop an existing database
-     *
-     * @param string $name name of the database that should be dropped
-     * @return string
-     * @override
-     */
-    public function getDropDatabaseSQL($name)
-    {
-        return 'DROP DATABASE ' . $name;
-    }
 
     public function getSetTransactionIsolationSQL($level)
     {
@@ -364,7 +250,8 @@ class DblibPlatform extends AbstractPlatform
      */
     public function getDateTimeTypeDeclarationSQL(array $fieldDeclaration)
     {
-        return 'CHAR(' . strlen('YYYY-MM-DD HH:MM:SS') . ')';
+        // 6 - microseconds precision length
+        return 'DATETIME2(6)';
     }
 
     /**
@@ -383,13 +270,6 @@ class DblibPlatform extends AbstractPlatform
         return 'CHAR(' . strlen('HH:MM:SS') . ')';
     }
 
-    /**
-     * @override
-     */
-    public function getBooleanTypeDeclarationSQL(array $field)
-    {
-        return 'BIT';
-    }
 
     /**
      * Get the platform name for this instance
@@ -489,17 +369,6 @@ class DblibPlatform extends AbstractPlatform
         return $query;
     }
 
-    /**
-     * Get the insert sql for an empty insert statement
-     *
-     * @param string $tableName
-     * @param string $identifierColumnName
-     * @return string $sql
-     */
-    public function getEmptyIdentityInsertSQL($quotedTableName, $quotedIdentifierColumnName)
-    {
-        return 'INSERT INTO ' . $quotedTableName . ' DEFAULT VALUES';
-    }
 
     /**
      * @inheritdoc
@@ -509,17 +378,7 @@ class DblibPlatform extends AbstractPlatform
         return 'TRUNCATE TABLE '.$tableName;
     }
 
-    /**
-     * MsSql uses Table Hints for locking strategies instead of the ANSI SQL FOR UPDATE like hints.
-     *
-     * @return string
-     */
-    public function getForUpdateSQL()
-    {
-        return '';
-    }
-
-    /**
+       /**
      * @license LGPL
      * @author Hibernate
      * @param  string $fromClause
