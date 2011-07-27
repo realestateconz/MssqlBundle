@@ -62,11 +62,8 @@ class DblibPlatform extends MsSqlPlatform
                 // SELECT TOP DISTINCT does not work with mssql
                 if(preg_match('#^SELECT\s+DISTINCT#i', $query) !== false) {
                     $query = preg_replace('/^SELECT\s+DISTINCT\s/i', 'SELECT DISTINCT TOP ' . $count . ' ', $query);
-                    echo $query;
                 } else {
-                    echo $query;
                     $query = preg_replace('/^SELECT\s/i', 'SELECT TOP ' . $count . ' ', $query);
-                    echo $query;exit;
                 }
 
                 
