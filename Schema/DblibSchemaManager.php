@@ -2,6 +2,8 @@
 
 namespace Realestate\MssqlBundle\Schema;
 
+use Doctrine\DBAL\Schema\MsSqlSchemaManager;
+
 /**
  * Schema manager for the MsSql/Dblib RDBMS.
  *
@@ -15,166 +17,19 @@ namespace Realestate\MssqlBundle\Schema;
  * @since       2.0
  */
 
-class DblibSchemaManager extends AbstractSchemaManager
+class DblibSchemaManager extends MsSqlSchemaManager
 {
-    protected function _getPortableViewDefinition($view)
-    {
-        return new View($view['TABLE_NAME'], $view['VIEW_DEFINITION']);
-    }
 
-    protected function _getPortableTableDefinition($table)
-    {
-        return array_shift($table);
-    }
 
-    protected function _getPortableTableIndexesList($tableIndexes, $tableName=null)
-    {
-        foreach($tableIndexes AS $k => $v) {
-            $v = array_change_key_case($v, CASE_LOWER);
-            if($v['is_primary_key'] == true) {
-                $v['primary'] = true;
-            } else {
-                $v['primary'] = false;
-            }
-            if ($v['is_unique'] == true) {
-                $v['non_unique'] = false;
-            }
-            else {
-                $v['non_unique'] = true;
-            }
-            $tableIndexes[$k] = $v;
-        }
-
-        return parent::_getPortableTableIndexesList($tableIndexes, $tableName);
-    }
+  
+   
 
     protected function _getPortableSequenceDefinition($sequence)
     {
         return end($sequence);
     }
 
-    protected function _getPortableDatabaseDefinition($database)
-    {
-        return $database['Database'];
-    }
-
-    /**
-     * Gets a portable column definition.
-     *
-     * The database type is mapped to a corresponding Doctrine mapping type.
-     *
-     * @param $tableColumn
-     * @return array
-     */
-    protected function _getPortableTableColumnDefinition($tableColumn)
-    {
-        $tableColumn = \array_change_key_case($tableColumn, CASE_LOWER);
-
-        $dbType = strtolower($tableColumn['data_type']);
-
-        $type = array();
-        $length = $unsigned = $fixed = null;
-        if ( ! empty($tableColumn['character_maximum_length'])) {
-            $length = $tableColumn['character_maximum_length'];
-            if (stristr($tableColumn['character_maximum_length'], 'null') !== false) {
-                $tableColumn['character_maximum_length'] = null;
-            }
-        }
-
-        if ( ! isset($tableColumn['column_name'])) {
-            $tableColumn['column_name'] = '';
-        }
-
-        if (stristr($tableColumn['column_default'], 'null') !== false) {
-            $tableColumn['column_default'] = null;
-        }
-
-        $precision = null;
-        $scale = null;
-
-        switch ($dbType) {
-            case 'integer':
-            case 'bigint':
-            case 'tinyint':
-            case 'smallint':
-            case 'numeric':
-                if($tableColumn['numeric_scale'] > 0) {
-                    $type = 'decimal';
-                    $precision = $tableColumn['numeric_precision'];
-                    $scale = $tableColumn['numeric_scale'];
-                } else {
-                    $type = 'integer';
-                }
-                $length = null;
-                break;
-            case 'bit':
-                $type = 'boolean';
-                $length = null;
-                break;
-            case 'varchar':
-                $fixed = false;
-            case 'nvarchar':
-                $fixed = false;
-            case 'char':
-            case 'text':
-                $fixed = false;
-            case 'ntext':
-                $fixed = false;
-            case 'nchar':
-                if ($length == '1' && preg_match('/^(is|has)/', $tableColumn['column_name'])) {
-                    $type = 'boolean';
-                } else {
-                    $type = 'string';
-                }
-                if ($fixed !== false) {
-                    $fixed = true;
-                }
-                break;
-            case 'datetime':
-            case 'timestamp':
-            case 'smalldatetime':
-                $type = 'datetime';
-                $length = null;
-                break;
-            case 'float':
-                $precision = $tableColumn['numeric_precision'];
-                $scale = $tableColumn['numeric_scale'];
-                $type = 'decimal';
-                $length = null;
-                break;
-            case 'clob':
-            case 'nclob':
-                $length = null;
-                $type = 'text';
-                break;
-            case 'binary':
-            case 'varbinary':
-            case 'image':
-                $type = 'blob';
-                $length = null;
-            break;
-            case 'uniqueidentifier':
-                $type = 'uniqueidentifier';
-                $length = null;
-            break;
-            default:
-                $type = 'string';
-                $length = null;
-        }
-
-        $options = array(
-            'notnull'    => (bool) ($tableColumn['is_nullable'] === 'NO'),
-            'fixed'      => (bool) $fixed,
-            'unsigned'   => (bool) $unsigned,
-            'default'    => $tableColumn['column_default'],
-            'length'     => $length,
-            'precision'  => $precision,
-            'scale'      => $scale,
-            'platformDetails' => array(),
-        );
-
-        return new Column($tableColumn['column_name'], \Doctrine\DBAL\Types\Type::getType($type), $options);
-    }
+   
 
      protected function _getPortableTableForeignKeysList($tableForeignKeys)
     {
