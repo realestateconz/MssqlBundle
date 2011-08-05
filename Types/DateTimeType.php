@@ -25,18 +25,24 @@ class DateTimeType extends BaseDateTimeType
             return null;
         }
 
-        $val = new \DateTime();
+        if ($value === "") {
+            return null;
+        }
+
+        //
         // returned format is too unpredictable, so have to resort to strtotime()
         $timestamp = strtotime($value);
 
         if($timestamp === false)
         {
             $val = \DateTime::createFromFormat($platform->getDateTimeFormatString(), $value);
+            //var_dump($value);exit;
             if (!$val) {
                 throw ConversionException::conversionFailedFormat($value, $this->getName(), $platform->getDateTimeFormatString());
             }
         }
 
+        $val = new \DateTime();
         $val->setTimestamp($timestamp);
 
         /*
