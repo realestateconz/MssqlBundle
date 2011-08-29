@@ -48,6 +48,16 @@ class DblibPlatform extends MsSqlPlatform
     {
         return false;
     }
+
+    /**
+     * Whether the platform supports savepoints.
+     *
+     * @return boolean
+     */
+    public function supportsSavepoints()
+    {
+        return false;
+    }
     
 
     /**
