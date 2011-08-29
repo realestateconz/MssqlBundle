@@ -40,6 +40,17 @@ class DblibPlatform extends MsSqlPlatform
 {
 
     /**
+     * Whether the platform supports transactions.
+     *
+     * @return boolean
+     */
+    public function supportsTransactions()
+    {
+        return false;
+    }
+    
+
+    /**
      * Adds an adapter-specific LIMIT clause to the SELECT statement.
      *
      * @param string $query
