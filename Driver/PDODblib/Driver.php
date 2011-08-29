@@ -26,12 +26,22 @@ class Driver implements \Doctrine\DBAL\Driver
      */
     public function connect(array $params, $username = null, $password = null, array $driverOptions = array())
     {
-        $conn = new Connection(
-            $this->_constructPdoDsn($params),
-            $username,
-            $password,
-            $driverOptions
-        );
+        if (stristr(PHP_OS, 'WIN')) {
+            $conn = new \Doctrine\DBAL\Driver\PDOConnection(
+                $this->_constructPdoDsn($params),
+                $username,
+                $password,
+                $driverOptions
+            );
+        } else {
+            $conn = new Connection(
+                $this->_constructPdoDsn($params),
+                $username,
+                $password,
+                $driverOptions
+            );
+        }
+        
         return $conn;
     }
 
