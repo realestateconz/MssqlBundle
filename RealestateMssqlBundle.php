@@ -22,7 +22,8 @@ class RealestateMssqlBundle extends Bundle
         if(!Type::hasType('uniqueidentifier')) {
             Type::addType('uniqueidentifier', 'Realestate\MssqlBundle\Types\UniqueidentifierType');
         }
-        
+
+        Type::overrideType('date', 'Realestate\MssqlBundle\Types\DateType');        
         Type::overrideType('datetime', 'Realestate\MssqlBundle\Types\DateTimeType');
     }
 }
