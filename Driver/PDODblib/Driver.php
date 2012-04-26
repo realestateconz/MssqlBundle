@@ -52,7 +52,7 @@ class Driver implements \Doctrine\DBAL\Driver
      */
     private function _constructPdoDsn(array $params)
     {
-        if (stristr(PHP_OS, 'WIN'))
+        if (stristr(PHP_OS, 'WIN') && PHP_OS != 'Darwin')
         {
             // use for testing on Win
             $dsn = 'sqlsrv:server=';
