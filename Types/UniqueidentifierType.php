@@ -38,8 +38,10 @@ class UniqueidentifierType extends Type
     {
         if(strlen($value) != 36)
         {
+            // TODO - only run this on windows?  all our code should only use PDO
+            // updated driver shouldn't return binary
             // cast the mssql uniqueidentifier to a string
-            $value = mssql_guid_string($value);
+            // $value = mssql_guid_string($value);
         }
 
         return $value;
