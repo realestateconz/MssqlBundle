@@ -1,0 +1,17 @@
+{
+    "name": "realestate/mssql-bundle",
+    "description": "Microsoft SQL Server Bundle for Symfony 2",
+    "authors": [
+        {
+            "name": "Realestate.co.nz",
+            "name": "Ken Golovin",
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-0": {
+            "Realestate\\MssqlBundle": ""
+        }
+    },
+    "target-dir": "Realestate/MssqlBundle"
+}

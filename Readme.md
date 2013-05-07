@@ -1,3 +1,13 @@
+Install
+-------
+
+Add the **realestate/mssql-bundle** into **composer.json**
+
+    "require": {
+        ....
+        "realestate/mssql-bundle": "master-dev"
+    },
+
 *************************
 In Doctrine\DBAL\DriverManager's $_driverMap property, add this driver to the list:
 
