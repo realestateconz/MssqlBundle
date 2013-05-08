@@ -11,7 +11,7 @@ Add the **realestate/mssql-bundle** into **composer.json**
 *************************
 In Doctrine\DBAL\DriverManager's $_driverMap property, add this driver to the list:
 
-    'pdo_dblib' => 'Realestate\DBAL\Driver\PDODblib\Driver',
+    'pdo_dblib' => 'Realestate\MssqlBundle\Driver\PDODblib\Driver',
 
 
 *************************
