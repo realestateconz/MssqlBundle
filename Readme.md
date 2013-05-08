@@ -4,7 +4,7 @@ Install
 Add the **realestateconz/mssql-bundle** into **composer.json**
 
     "require": {
-        ""realestateconz/mssql-bundle": "dev-master"": "master-dev"
+        "realestateconz/mssql-bundle": "dev-master"
     },
 
 *************************
