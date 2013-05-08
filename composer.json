@@ -18,7 +18,9 @@
             "homepage": "https://github.com/realestateconz/MssqlBundle/contributors"
         }
     ],
-    "require": {},
+    "require": {
+        "doctrine/common": "~2.2,>=2.2.3"
+    },
     "autoload": {
         "psr-0": {
             "Realestate\\MssqlBundle": ""
