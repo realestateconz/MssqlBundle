@@ -1,11 +1,10 @@
 Install
 -------
 
-Add the **realestate/mssql-bundle** into **composer.json**
+Add the **realestateconz/mssql-bundle** into **composer.json**
 
     "require": {
-        ....
-        "realestate/mssql-bundle": "master-dev"
+        ""realestateconz/mssql-bundle": "dev-master"": "master-dev"
     },
 
 *************************
