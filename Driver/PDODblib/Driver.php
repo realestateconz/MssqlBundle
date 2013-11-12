@@ -82,6 +82,9 @@ class Driver implements \Doctrine\DBAL\Driver
             if (isset($params['dbname'])) {
                 $dsn .= 'dbname=' . $params['dbname'] . ';';
             }
+            if (isset($params['charset'])) {
+                $dns .= 'charset=' . $params['dbname'] . ';';
+            }
 
             return $dsn;
         }
