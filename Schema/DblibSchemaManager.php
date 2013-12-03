@@ -29,42 +29,6 @@ class DblibSchemaManager extends SQLServerSchemaManager
         return end($sequence);
     }
 
-   
-
-     protected function _getPortableTableForeignKeysList($tableForeignKeys)
-    {
-        $list = array();
-        foreach ($tableForeignKeys as $key => $value) {
-            $value = \array_change_key_case($value, CASE_LOWER);
-            if (!isset($list[$value['constraint_name']])) {
-                if ($value['delete_rule'] == "NO ACTION") {
-                    $value['delete_rule'] = null;
-                }
-
-                $list[$value['pkconstraint_name']] = array(
-                    'name' => $value['pkconstraint_name'],
-                    'local' => array(),
-                    'foreign' => array(),
-                    'foreignTable' => $value['fktable_name'],
-                    'onDelete' => $value['delete_rule'],
-                );
-            }
-            $list[$value['pkconstraint_name']]['local'][$value['deferrability']] = $value['pkcolumn_name'];
-            $list[$value['pkconstraint_name']]['foreign'][$value['deferrability']] = $value['fkcolumn_name'];
-        }
-
-        $result = array();
-        foreach($list AS $constraint) {
-            $result[] = new ForeignKeyConstraint(
-                array_values($constraint['local']), $constraint['foreignTable'],
-                array_values($constraint['foreign']),  $constraint['name'],
-                array('onDelete' => $constraint['onDelete'])
-            );
-        }
-
-        return $result;
-    }
-
     public function createDatabase($name)
     {
         $query = "CREATE DATABASE $name";
