@@ -136,6 +136,10 @@ class DblibPlatform extends SQLServer2008Platform
 
         // add uniqueidentifier
         $this->doctrineTypeMapping['uniqueidentifier'] = 'uniqueidentifier';
+        // use the geography type
+        $this->doctrineTypeMapping['geography'] = 'geography';
+        // define this column type as a string so it works properly for now
+        $this->doctrineTypeMapping['hierarchyid'] = 'string';
     }
 
     /**

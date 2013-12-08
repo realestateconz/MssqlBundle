@@ -22,6 +22,10 @@ class RealestateMssqlBundle extends Bundle
         if(!Type::hasType('uniqueidentifier')) {
             Type::addType('uniqueidentifier', 'Realestate\MssqlBundle\Types\UniqueidentifierType');
         }
+        
+        if(!Type::hasType('geography')) {
+            Type::addType('geography', 'Realestate\MssqlBundle\Types\PointType');
+        }
 
         Type::overrideType('date', 'Realestate\MssqlBundle\Types\DateType');        
         Type::overrideType('datetime', 'Realestate\MssqlBundle\Types\DateTimeType');
