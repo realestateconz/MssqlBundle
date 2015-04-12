@@ -149,4 +149,20 @@ class DblibPlatform extends SQLServer2008Platform
     {
         return 'Y-m-d H:i:s.u';
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function supportsSchemas()
+    {
+        return true;
+    }    
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function canEmulateSchemas()
+    {
+        return true;
+    }     
 }
