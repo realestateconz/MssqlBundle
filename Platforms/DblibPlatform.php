@@ -105,7 +105,7 @@ class DblibPlatform extends SQLServer2008Platform
                 //$query = "SELECT * FROM (SELECT ROW_NUMBER() OVER ($over) AS \"doctrine_rownum\", $query) AS doctrine_tbl WHERE doctrine_rownum BETWEEN $start AND $end";
                 
                 // distinct x must be first in the select list - didn't work with above
-                list($select_list, $from_part) = explode('FROM', $query);
+                list($select_list, $from_part) = explode('FROM', $query, 2);
                 $query = "SELECT * FROM (SELECT $select_list, ROW_NUMBER() OVER ($over) AS \"doctrine_rownum\" FROM $from_part) AS doctrine_tbl WHERE doctrine_rownum BETWEEN $start AND $end";
                 
             }
