@@ -31,8 +31,20 @@ class Connection extends \Doctrine\DBAL\Driver\PDOConnection implements DriverCo
     /**
      * {@inheritdoc}
      */
+    private function setParams()
+    {
+        $this->exec("SET ANSI_WARNINGS ON");
+        $this->exec("SET ANSI_PADDING ON");
+        $this->exec("SET ANSI_NULLS ON");
+        $this->exec("SET QUOTED_IDENTIFIER ON");
+        $this->exec("SET CONCAT_NULL_YIELDS_NULL ON");
+    }
+    /**
+     * {@inheritdoc}
+     */
     public function rollback()
     {
+        $this->setParams();
         $this->exec('ROLLBACK TRANSACTION');
     }
 
@@ -41,6 +53,7 @@ class Connection extends \Doctrine\DBAL\Driver\PDOConnection implements DriverCo
      */
     public function commit()
     {
+        $this->setParams();
         $this->exec('COMMIT TRANSACTION');
     }
 
@@ -49,6 +62,7 @@ class Connection extends \Doctrine\DBAL\Driver\PDOConnection implements DriverCo
      */
     public function beginTransaction()
     {
+        $this->setParams();
         $this->exec('BEGIN TRANSACTION');
     }
 
