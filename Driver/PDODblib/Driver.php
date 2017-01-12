@@ -11,6 +11,7 @@
  */
 
 namespace Realestate\MssqlBundle\Driver\PDODblib;
+
 use Realestate\MssqlBundle\Platforms\DblibPlatform;
 use Realestate\MssqlBundle\Schema\DblibSchemaManager;
 
@@ -42,7 +43,7 @@ class Driver implements \Doctrine\DBAL\Driver
                 $driverOptions
             );
         }
-        
+
         return $conn;
     }
 
