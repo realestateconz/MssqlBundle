@@ -1,3 +1,12 @@
+DEPRECATED
+---
+realestate.co.nz still uses this bundle, but it's in legacy code that is being phased out. The capabilities of the bundle are limited, and have been superseeded by the Doctrine SQLServer support.
+
+If you need a Doctrine DBLib driver, something like https://packagist.org/packages/leaseweb/doctrine-pdo-dblib should work.
+
+If you wish to continue using the library, you may fork it and maintain it yourself. There will be no further development on this bundle moving forward.
+
+
 Installation
 -------
 
