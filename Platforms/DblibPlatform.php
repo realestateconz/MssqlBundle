@@ -125,8 +125,6 @@ class DblibPlatform extends SQLServer2008Platform
         return 'mssql';
     }
 
-
-    /**
     /**
      * @override
      */
