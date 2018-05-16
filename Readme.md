@@ -56,7 +56,7 @@ public function registerBundles()
 
 Notes
 -------
-### Prerequsites
+### Prerequisites
 This driver requires version 8.0 (from http://www.ubuntitis.com/?p=64) as default 4.2 version does not have UTF support
 
 In /etc/freetds/freetds.conf, change
